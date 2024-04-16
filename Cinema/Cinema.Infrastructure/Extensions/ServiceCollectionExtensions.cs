@@ -2,6 +2,7 @@
 using Cinema.Application.Services;
 using Cinema.Domain.Interfaces;
 using Cinema.Infrastructure.Repositories;
+using Cinema.Infrastructure.Services;
 using Cinema.Infrastructure.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,16 +23,20 @@ namespace Cinema.Infrastructure.Extensions
                 throw new Exception("MongoDb settings not found in configuration");
             }
 
-            services.AddSingleton(new MongoDbSettings(connectionString, databaseName));
-
             services.AddSingleton<IMongoClient>(serviceProvider =>
             {
-                var settings = serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value;
-                return new MongoClient(settings.ConnectionString);
+                return new MongoClient(connectionString);
+            });
+
+            services.AddSingleton(serviceProvider =>
+            {
+                var client = serviceProvider.GetRequiredService<IMongoClient>();
+                return client.GetDatabase(databaseName);
             });
 
             services.AddScoped<IFilmeService, FilmeService>();
             services.AddScoped<IFilmeRepository, FilmeRepository>();
+            services.AddScoped<MongoDbService>();
 
             return services;
         }

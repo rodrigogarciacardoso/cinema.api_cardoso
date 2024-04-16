@@ -1,16 +1,14 @@
-﻿using Cinema.Infrastructure.Settings;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 
 namespace Cinema.Infrastructure.Services
 {
-    public class MongoDbService(IMongoClient client, MongoDbSettings settings)
+    public class MongoDbService(IMongoDatabase database)
     {
-        private readonly IMongoDatabase _database = client.GetDatabase(settings.DatabaseName);
+        private readonly IMongoDatabase _database = database;
 
         public IMongoCollection<T> GetCollection<T>(string name)
         {
             return _database.GetCollection<T>(name);
         }
     }
-
 }
