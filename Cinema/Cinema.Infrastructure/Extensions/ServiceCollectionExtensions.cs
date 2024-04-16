@@ -3,10 +3,8 @@ using Cinema.Application.Services;
 using Cinema.Domain.Interfaces;
 using Cinema.Infrastructure.Repositories;
 using Cinema.Infrastructure.Services;
-using Cinema.Infrastructure.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace Cinema.Infrastructure.Extensions
@@ -15,6 +13,7 @@ namespace Cinema.Infrastructure.Extensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
+            #region MongoDB
             var connectionString = configuration.GetSection("MongoDbSettings:ConnectionString").Value;
             var databaseName = configuration.GetSection("MongoDbSettings:DatabaseName").Value;
 
@@ -33,6 +32,7 @@ namespace Cinema.Infrastructure.Extensions
                 var client = serviceProvider.GetRequiredService<IMongoClient>();
                 return client.GetDatabase(databaseName);
             });
+            #endregion
 
             services.AddScoped<IFilmeService, FilmeService>();
             services.AddScoped<IFilmeRepository, FilmeRepository>();

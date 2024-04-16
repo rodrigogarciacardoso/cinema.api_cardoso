@@ -1,23 +1,35 @@
 ﻿using Cinema.Domain.Entidades;
 using Cinema.Domain.Interfaces;
-using Cinema.Infrastructure.Services;
+using Cinema.Infrastructure.Data.MongoDb.Documents;
 using MongoDB.Driver;
 
 namespace Cinema.Infrastructure.Repositories
 {
-    public class FilmeRepository(MongoDbService mongoDbService) : IFilmeRepository
+    public class FilmeRepository(IMongoDatabase database) : IFilmeRepository
     {
-        private readonly IMongoCollection<Filme> _filmes = mongoDbService.GetCollection<Filme>("Filmes");
+        private readonly IMongoCollection<FilmeDocument> _collection = database.GetCollection<FilmeDocument>("Filmes");
 
         public async Task<Filme> GetFilmeAsync(string id)
         {
-            var filter = Builders<Filme>.Filter.Eq(f => f.Id, id);
-            return await _filmes.Find(filter).FirstOrDefaultAsync();
+            var filmeDocument = await _collection.Find(f => f.Id == id).FirstOrDefaultAsync();
+            return MapToDomain(filmeDocument);
         }
 
         public async Task<IEnumerable<Filme>> GetFilmesAsync()
         {
-            return await _filmes.Find(filme => true).ToListAsync();
+            var filmeDocuments = await _collection.Find(f => true).ToListAsync();
+            return filmeDocuments.Select(MapToDomain);
+        }
+
+        private Filme MapToDomain(FilmeDocument filmeDocument)
+        {
+            return new Filme
+            {
+                Id = filmeDocument.Id,
+                Titulo = filmeDocument.Titulo,
+                Diretor = filmeDocument.Diretor
+            };
         }
     }
+
 }
