@@ -5,5 +5,4 @@
         public string ConnectionString { get; set; } = connectionString;
         public string DatabaseName { get; set; } = databaseName;
     }
-
 }
