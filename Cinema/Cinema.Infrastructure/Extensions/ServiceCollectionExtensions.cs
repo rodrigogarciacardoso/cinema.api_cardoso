@@ -8,29 +8,32 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-public static class ServiceCollectionExtensions
+namespace Cinema.Infrastructure.Extensions
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static class ServiceCollectionExtensions
     {
-        var connectionString = configuration.GetSection("MongoDbSettings:ConnectionString").Value;
-        var databaseName = configuration.GetSection("MongoDbSettings:DatabaseName").Value;
-
-        if (connectionString == null || databaseName == null)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            throw new Exception("MongoDb settings not found in configuration");
+            var connectionString = configuration.GetSection("MongoDbSettings:ConnectionString").Value;
+            var databaseName = configuration.GetSection("MongoDbSettings:DatabaseName").Value;
+
+            if (connectionString == null || databaseName == null)
+            {
+                throw new Exception("MongoDb settings not found in configuration");
+            }
+
+            services.AddSingleton(new MongoDbSettings(connectionString, databaseName));
+
+            services.AddSingleton<IMongoClient>(serviceProvider =>
+            {
+                var settings = serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value;
+                return new MongoClient(settings.ConnectionString);
+            });
+
+            services.AddScoped<IFilmeService, FilmeService>();
+            services.AddScoped<IFilmeRepository, FilmeRepository>();
+
+            return services;
         }
-
-        services.AddSingleton(new MongoDbSettings(connectionString, databaseName));
-
-        services.AddSingleton<IMongoClient>(serviceProvider =>
-        {
-            var settings = serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value;
-            return new MongoClient(settings.ConnectionString);
-        });
-
-        services.AddScoped<IFilmeService, FilmeService>();
-        services.AddScoped<IFilmeRepository, FilmeRepository>();
-
-        return services;
     }
 }
