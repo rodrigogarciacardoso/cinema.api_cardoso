@@ -12,5 +12,10 @@ namespace Cinema.Application.Services
         {
             return await _filmeRepository.GetFilmeAsync(id);
         }
+
+        public async Task<IEnumerable<Filme>> GetFilmesByNomeOrDiretorAsync(string? titulo, string? diretor)
+        {
+            return await _filmeRepository.GetFilmesByFilterAsync(diretor, titulo);
+        }
     }
 }

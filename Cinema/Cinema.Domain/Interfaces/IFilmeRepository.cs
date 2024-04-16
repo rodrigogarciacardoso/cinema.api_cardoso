@@ -6,5 +6,6 @@ namespace Cinema.Domain.Interfaces
     {
         Task<Filme> GetFilmeAsync(string id);
         Task<IEnumerable<Filme>> GetFilmesAsync();
+        Task<IEnumerable<Filme>> GetFilmesByFilterAsync(string? diretor, string? titulo);
     }
 }

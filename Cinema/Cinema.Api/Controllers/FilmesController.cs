@@ -20,6 +20,18 @@ namespace cinema.api_cardoso.Controllers
             }
             return filme;
         }
+
+        [HttpGet("filter")]
+        public async Task<ActionResult<IEnumerable<Filme>>> GetFilmesByFilter([FromQuery] string? titulo, [FromQuery] string? diretor)
+        {
+            var filmes = await _filmeService.GetFilmesByNomeOrDiretorAsync(titulo, diretor);
+            if (filmes == null || !filmes.Any())
+            {
+                return NotFound();
+            }
+            return Ok(filmes);
+        }
+
     }
 }
 
