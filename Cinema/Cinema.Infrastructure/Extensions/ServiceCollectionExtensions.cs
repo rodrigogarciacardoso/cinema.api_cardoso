@@ -32,11 +32,15 @@ namespace Cinema.Infrastructure.Extensions
                 var client = serviceProvider.GetRequiredService<IMongoClient>();
                 return client.GetDatabase(databaseName);
             });
+
+            services.AddScoped<MongoDbService>();
             #endregion
 
             services.AddScoped<IFilmeService, FilmeService>();
             services.AddScoped<IFilmeRepository, FilmeRepository>();
-            services.AddScoped<MongoDbService>();
+            services.AddScoped<IClienteRepository, ClienteRepository>();
+            services.AddScoped<ISalaRepository, SalaRepository>();
+            services.AddScoped<ISessaoRepository, SessaoRepository>();
 
             return services;
         }

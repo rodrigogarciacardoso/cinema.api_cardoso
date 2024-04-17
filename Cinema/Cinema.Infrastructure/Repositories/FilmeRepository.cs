@@ -3,7 +3,6 @@ using Cinema.Domain.Interfaces;
 using Cinema.Infrastructure.Data.MongoDb.Documents;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.IO;
 
 namespace Cinema.Infrastructure.Repositories
 {
@@ -12,7 +11,7 @@ namespace Cinema.Infrastructure.Repositories
         private readonly IMongoCollection<FilmeDocument> _collection = database.GetCollection<FilmeDocument>("Filmes");
         readonly Func<FilmeDocument, Filme> mapToDomain = filmeDocument => new Filme
         {
-            Id = filmeDocument.Id,
+            Id = filmeDocument.Id!,
             Titulo = filmeDocument.Titulo,
             Diretor = filmeDocument.Diretor
         };
@@ -29,6 +28,14 @@ namespace Cinema.Infrastructure.Repositories
             return filmeDocuments.Select(mapToDomain);
         }
 
+        public async Task<IEnumerable<Filme>> GetFilmesAsync(IEnumerable<string> ids)
+        {
+            var filter = Builders<FilmeDocument>.Filter.In(f => f.Id, ids);
+            var filmesDocument = await _collection.Find(filter).ToListAsync();
+
+            return filmesDocument.Select(mapToDomain);
+        }
+
         public async Task<IEnumerable<Filme>> GetFilmesByFilterAsync(string? diretor, string? titulo)
         {
             var builder = Builders<FilmeDocument>.Filter;
@@ -36,7 +43,6 @@ namespace Cinema.Infrastructure.Repositories
 
             if (!string.IsNullOrEmpty(diretor))
             {
-                //filter &= builder.Eq(f => f.Diretor, diretor);
                 filter &= builder.Regex(f => f.Diretor, new BsonRegularExpression(diretor, "i"));
             }
 

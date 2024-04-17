@@ -31,7 +31,6 @@ namespace cinema.api_cardoso.Controllers
             }
             return Ok(filmes);
         }
-
     }
 }
 
