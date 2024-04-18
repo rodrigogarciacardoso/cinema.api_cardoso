@@ -8,5 +8,6 @@ namespace Cinema.Domain.Interfaces
         Task<IEnumerable<Sessao>> GetSessoesBySalaAsync(string id);
         Task UpdateSessaoAsync(Sessao sessao);
         Task<IEnumerable<Sessao>> GetSessoesBySalasAsync(IEnumerable<string> ids);
+        Task<IEnumerable<Sessao>> GetSessoesAsync(IEnumerable<string> ids);
     }
 }

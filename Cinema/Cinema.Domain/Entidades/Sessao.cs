@@ -1,8 +1,8 @@
 namespace Cinema.Domain.Entidades
 {
-    public class Sessao(string? id, Filme filme, DateTime horarioInicio, DateTime horarioFim, Sala sala, int ingressosDisponiveis)
+    public class Sessao(string id, Filme filme, DateTime horarioInicio, DateTime horarioFim, Sala sala, int ingressosDisponiveis)
     {
-        public string? Id { get; set; } = id;
+        public string Id { get; set; } = id;
         public Filme Filme { get; set; } = filme;
         public DateTime HorarioInicio { get; set; } = horarioInicio;
         public DateTime HorarioFim { get; set; } = horarioFim;

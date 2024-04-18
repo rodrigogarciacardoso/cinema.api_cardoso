@@ -1,12 +1,12 @@
 namespace Cinema.Domain.Entidades
 {
-    public class Ingresso
+    public class Ingresso(string id, Sessao sessao, decimal preco, string assento, Cliente cliente)
     {
-        public string Id { get; set; }
-        public Sessao Sessao { get; set; }
-        public decimal Preco { get; set; }
-        public string Assento { get; set; }
-        public Cliente Cliente { get; set; }
+        public string Id { get; set; } = id;
+        public Sessao Sessao { get; set; } = sessao;
+        public decimal Preco { get; set; } = preco;
+        public string Assento { get; set; } = assento;
+        public Cliente Cliente { get; set; } = cliente;
 
         public bool Validar()
         {
